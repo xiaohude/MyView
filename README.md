@@ -3,13 +3,13 @@
 
 
 目前集成的自定义View有：
-1.二次贝塞尔曲线----1
-2.三次贝塞尔曲线----2
-3.心形圆形动态变化贝塞尔曲线----heart
-4.叶子loading----leaf
+1. 二次贝塞尔曲线----1
+2. 三次贝塞尔曲线----2
+3. 心形圆形动态变化贝塞尔曲线----heart
+4. 叶子loading----leaf
+ 
 
-
-效果图：
+效果图：<br>
 ![叶子loading](./ScreenShots/leafLoading.gif)
 
 ![二次贝塞尔曲线](./ScreenShots/quadBezier.gif)
