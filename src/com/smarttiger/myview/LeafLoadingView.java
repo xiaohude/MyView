@@ -208,7 +208,7 @@ public class LeafLoadingView extends View {
                 Matrix matrix = new Matrix();
                 float transX = mLeftMargin + leaf.x;
                 float transY = mLeftMargin + leaf.y;
-                Log.i(TAG, "left.x = " + leaf.x + "--leaf.y=" + leaf.y);
+//                Log.i(TAG, "left.x = " + leaf.x + "--leaf.y=" + leaf.y);
                 matrix.postTranslate(transX, transY);
                 // 通过时间关联旋转角度，则可以直接通过修改LEAF_ROTATE_TIME调节叶子旋转快慢
                 float rotateFraction = ((currentTime - leaf.startTime) % mLeafRotateTime)
@@ -227,18 +227,22 @@ public class LeafLoadingView extends View {
         }
     }
 
+    private long mLeafShowTime; //解决叶子到进度条底端才添加进度的问题。
     private void getLeafLocation(Leaf leaf, long currentTime) {
         long intervalTime = currentTime - leaf.startTime;
         mLeafFloatTime = mLeafFloatTime <= 0 ? LEAF_FLOAT_TIME : mLeafFloatTime;
-//        mLeafFloatTime = mLeafFloatTime * (1 - mProgress / TOTAL_PROGRESS);
+        mLeafShowTime = mLeafFloatTime * (TOTAL_PROGRESS - mProgress) / TOTAL_PROGRESS + 260;//260为叶子宽度的误差
         if (intervalTime < 0) {
             return;
-        } else if (intervalTime > mLeafFloatTime) {
+        } else if (intervalTime > mLeafShowTime) {
             leaf.startTime = System.currentTimeMillis()
                     + new Random().nextInt((int) mLeafFloatTime);
         	System.out.println("leaf.startTime===="+leaf.startTime);
         	mProgress ++;
         }
+        
+//        if(intervalTime > mLeafShowTime && intervalTime < mLeafShowTime+16)
+//        	mProgress ++;
 
         float fraction = (float) intervalTime / mLeafFloatTime;
         leaf.x = (int) (mProgressWidth - mProgressWidth * fraction);
@@ -267,7 +271,7 @@ public class LeafLoadingView extends View {
             default:
                 break;
         }
-        Log.i(TAG, "---a = " + a + "---w = " + w + "--leaf.x = " + leaf.x);
+//        Log.i(TAG, "---a = " + a + "---w = " + w + "--leaf.x = " + leaf.x);
         return (int) (a * Math.sin(w * leaf.x)) + mArcRadius * 2 / 3;
     }
 
