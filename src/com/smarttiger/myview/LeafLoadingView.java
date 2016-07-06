@@ -182,7 +182,7 @@ public class LeafLoadingView extends View {
             canvas.drawArc(mArcRectF, 90, 180, false, mOrangePaint);
             // 3.绘制orange RECT
             mOrangeRectF.left = mArcRightLocation;
-            mOrangeRectF.right = mCurrentProgressPosition;
+            mOrangeRectF.right = mLeftMargin + mCurrentProgressPosition;
             canvas.drawRect(mOrangeRectF, mOrangePaint);
 
         }
