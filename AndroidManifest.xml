@@ -27,6 +27,11 @@
             android:name=".LeafLoadingActivity"
         	android:theme="@android:style/Theme.Holo.NoActionBar" >
         </activity>
+        
+        <activity
+            android:name=".SiderBarActivity"
+        	android:theme="@android:style/Theme.Holo.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>
