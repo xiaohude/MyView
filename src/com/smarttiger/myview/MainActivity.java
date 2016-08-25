@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
 		
 
 //		showLeafLoading();
-		showSiderBar();
+//		showSiderBar();
 	}
 	
 	private boolean bezier2Mode = false;
@@ -81,4 +81,5 @@ public class MainActivity extends Activity {
 		Intent intent = new Intent(this, SiderBarActivity.class);
 		startActivity(intent);
 	}
+	
 }
