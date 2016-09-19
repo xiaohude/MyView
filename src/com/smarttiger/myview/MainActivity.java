@@ -15,6 +15,7 @@ public class MainActivity extends Activity {
 	private Bezier1 bezier1;
 	private Bezier2 bezier2;
 	private BezierHeart bezierHeart;
+	private RulerView rulerView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,7 @@ public class MainActivity extends Activity {
 		bezier1 = (Bezier1) findViewById(R.id.bezier1);
 		bezier2 = (Bezier2) findViewById(R.id.bezier2);
 		bezierHeart = (BezierHeart) findViewById(R.id.bezierHeart);
+		rulerView = (RulerView) findViewById(R.id.rulerView);
 		
 		inputButton.setOnClickListener(new OnClickListener() {
 			
@@ -59,6 +61,9 @@ public class MainActivity extends Activity {
 				else if(text.equals("siderbar")) {
 					showSiderBar();
 				}
+				else if(text.equals("ruler")) {
+					showView(rulerView);
+				}
 			}
 		});
 	}
@@ -67,6 +72,7 @@ public class MainActivity extends Activity {
 		bezier1.setVisibility(View.GONE);
 		bezier2.setVisibility(View.GONE);
 		bezierHeart.setVisibility(View.GONE);
+		rulerView.setVisibility(View.GONE);
 		view.setVisibility(View.VISIBLE);
 	}
 	

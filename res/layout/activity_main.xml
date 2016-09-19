@@ -20,7 +20,7 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
 	        android:layout_weight="1"
-	        android:hint="(1,2,heart,leaf,siderbar)"
+	        android:hint="(1,2,heart,leaf,siderbar,ruler)"
             />
         <Button 
             android:id="@+id/input_button"
@@ -52,9 +52,15 @@
 	        android:id="@+id/bezierHeart"
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
-	        android:visibility="visible"
+	        android:visibility="gone"
 	        />
     
+	    <com.smarttiger.myview.RulerView
+	        android:id="@+id/rulerView"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:visibility="visible"
+	        />
     </RelativeLayout>
 
 </RelativeLayout>
