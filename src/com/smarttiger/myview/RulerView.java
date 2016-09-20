@@ -1,12 +1,14 @@
 package com.smarttiger.myview;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.Paint.Style;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -15,12 +17,12 @@ import android.view.WindowManager;
 
 public class RulerView extends View {
 
-	private static float CALIBRATION = 1;//用来校准尺子的基数
-	private float CALIBRATION_saved;
+	private float calibration = 1;//用来校准尺子的基数
+	private float calibration_saved;
 	private float xmm_saved;
+	private Rect rectBtn;
 	
-	private float xcm;
-	private float xmm;
+	private float xmm;//毫米单位
 	private float ruler_length;
 	private float ruler_width;
 	private PointF mid_point = new PointF(0, 0);
@@ -38,71 +40,72 @@ public class RulerView extends View {
 	private PointF finger_second_down = new PointF();
 	private PointF mid_point_saved = new PointF();
 	private String MODE = "NONE";
+	private Paint paint;
+	private Paint paintBtn;
+	
 
-	public RulerView(Context context) {
-		super(context, null);
-	}
+	private SharedPreferences preferences;
 	
 	public RulerView(Context context, AttributeSet attrs) {
         super(context, attrs);
+		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		DisplayMetrics dm = new DisplayMetrics();
 		((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
-		find_pixal(dm);
-		ruler_length = 6 * xcm; // 设置一开始为6厘米的尺子
-		ruler_width = xcm;
-		mid_point.set((float) (ruler_length * 0.5), 0);
-		rect = new Rect(0, 0, (int) (ruler_length), (int) ruler_width);
+		init(context, dm, 6);
 	}
-	
-	public RulerView(Context context, DisplayMetrics dm) {
+	public RulerView(Context context, DisplayMetrics dm,int length) {
 		super(context);
-		find_pixal(dm);
-		ruler_length = 6 * xcm; // 设置一开始为6厘米的尺子
-		ruler_width = xcm;
-		mid_point.set((float) (ruler_length * 0.5), 0);
-		rect = new Rect(0, 0, (int) (ruler_length), (int) ruler_width);
-	}
-	
-	public RulerView(Context context, DisplayMetrics dm,float length) {
-		super(context);
-		find_pixal(dm);
-		ruler_length = length * xcm; // 设置一开始为length厘米的尺子
-		ruler_width = xcm;
-		mid_point.set((float) (ruler_length * 0.5), 0);
-		rect = new Rect(0, 0, (int) (ruler_length), (int) ruler_width);
+		init(context, dm, length);
 	}
 	public RulerView(Context context, DisplayMetrics dm,PointF point) {
 		super(context);
-		find_pixal(dm);
-		ruler_length = 6 * xcm; // 设置一开始为length厘米的尺子
-		ruler_width = xcm;
+		init(context, dm, 6);
 		mid_point.set(point);
-		rect = new Rect(0, 0, (int) (ruler_length), (int) ruler_width);
-		renewRect();
 	}
-	public RulerView(Context context, DisplayMetrics dm,Float length,PointF point) {
-		super(context);
+	public void init(Context context, DisplayMetrics dm,int length) {
 		find_pixal(dm);
-		ruler_length = length * xcm; // 设置一开始为length厘米的尺子
-		ruler_width = xcm;
-		mid_point.set(point);
+		ruler_length = length * xmm * 10; // 设置一开始为length厘米的尺子
+		ruler_width = 180;
+		mid_point.set((float) (ruler_length * 0.5), 0);
 		rect = new Rect(0, 0, (int) (ruler_length), (int) ruler_width);
-		renewRect();
+		rectBtn = new Rect((int)ruler_length, 0, (int)(ruler_length+ruler_width), (int)ruler_width);
+		
+		paint = new Paint();
+		paint.setColor(Color.GREEN);
+		paint.setStyle(Style.STROKE);
+		paint.setStrokeWidth(2);
+		paint.setTextSize(30);
+		
+		paintBtn = new Paint();
+		paintBtn.setColor(Color.GREEN);
+		paintBtn.setStyle(Style.FILL_AND_STROKE);
+		paintBtn.setStrokeWidth(2);
+		paintBtn.setTextSize(50);
+		paintBtn.setTextAlign(Paint.Align.CENTER);//文本居中
+		
+//		HorizontalRuler();
+	}
+	private void HorizontalRuler() {
+		WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+		int width = wm.getDefaultDisplay().getWidth();
+		mid_point.set((float) (width-ruler_width), ruler_length/2);
+		angle_rotate = 90;
+		
+	}
+	
+	private static final String SAVE_CALIBRATION = "save_calibration";
+	private void saveCalibration() {
+		preferences.edit().putFloat(SAVE_CALIBRATION, calibration).commit();
+	}
+	private float getCalibration() {
+		return preferences.getFloat(SAVE_CALIBRATION, 1);
 	}
 	
 	protected void onDraw(Canvas canvas) {
 		// TODO Auto-generated method stub
 		super.onDraw(canvas);
-		Paint paint = new Paint();
-		paint.setColor(Color.GREEN);
-		paint.setStyle(Style.STROKE);
-		paint.setStrokeWidth(2);
-		paint.setTextSize(30);
 		canvas.save();
 		canvas.rotate(angle_rotate, mid_point.x, mid_point.y);
-//		canvas.drawRect(mid_point.x - ruler_length / 2, mid_point.y,
-//				mid_point.x + ruler_length / 2, mid_point.y + ruler_width,
-//				paint);
 		canvas.drawRect(rect, paint);//画尺子边界
 		for (int i = 0; i < ruler_length / xmm; i++) {
 			float Left = mid_point.x - ruler_length / 2;
@@ -122,8 +125,8 @@ public class RulerView extends View {
 			}
 		}
 		
-		canvas.drawRect(mid_point.x + ruler_length/2, mid_point.y, mid_point.x + ruler_length/2 + ruler_width, mid_point.y + ruler_width, paint);
-		canvas.drawText("校准",mid_point.x + ruler_length/2 + ruler_width/2, mid_point.y + ruler_width/2,  paint);
+		canvas.drawRect(rectBtn, paint);
+		canvas.drawText("校准", mid_point.x+ruler_length/2+ruler_width/2, mid_point.y+ruler_width/2+15,  paintBtn);
 		
 		canvas.restore();
 	}
@@ -156,7 +159,7 @@ public class RulerView extends View {
 				SingleToMulti = true;
 				distance_initial = distance(event);
 				distance_saved = ruler_length;
-				CALIBRATION_saved = CALIBRATION;
+				calibration_saved = calibration;
 				mid_point_between_fingers_down.set(
 						(event.getX(0) + event.getX(1)) / 2,
 						(event.getY(0) + event.getY(1)) / 2);
@@ -190,7 +193,8 @@ public class RulerView extends View {
 						- mid_point_between_fingers_down.y);
 				angle_rotate = angle_saved + rotation(event) - angle_initial;
 				ruler_length = distance_saved * distance(event) / distance_initial;
-				CALIBRATION = CALIBRATION_saved * distance(event) / distance_initial;
+				calibration = calibration_saved * distance(event) / distance_initial;
+				xmm = xmm_saved *  calibration;
 				renewRect();
 			}
 			invalidate();
@@ -200,6 +204,8 @@ public class RulerView extends View {
 				MODE = "NONE";
 			break;
 		case MotionEvent.ACTION_POINTER_1_UP:
+			if (MODE == "ZOOM")
+				saveCalibration();
 			MultiToSingle = true;
 //			MODE = "DRAG";
 //			System.out.println(MODE);
@@ -212,9 +218,9 @@ public class RulerView extends View {
 
 	/** 校准尺子 */
 	protected void find_pixal(DisplayMetrics dm) {
-		xcm = (float) (dm.xdpi / 2.54) * CALIBRATION; // 单位都是pixal
-		xmm = xcm / 10;
-		xmm_saved = xmm;
+		calibration = getCalibration();
+		xmm_saved = (float) (dm.xdpi / 25.4);
+		xmm = xmm_saved * calibration; // 单位都是pixal
 	}
 
 	private float rotation(MotionEvent event) {
@@ -260,12 +266,16 @@ public class RulerView extends View {
 		return point_map;
 	}
 	
+	/** 更新矩形 */
 	protected void renewRect() {
-		xmm = xmm_saved *  CALIBRATION;
-		
 		rect.left = (int) (mid_point.x - ruler_length * 0.5 );
 		rect.right = (int) (mid_point.x + ruler_length * 0.5 );
 		rect.top = (int) mid_point.y;
 		rect.bottom = (int) (mid_point.y + ruler_width);
+		
+		rectBtn.left = (int) (mid_point.x + ruler_length/2);
+		rectBtn.right = (int) (mid_point.x + ruler_length/2 + ruler_width);
+		rectBtn.top = (int) mid_point.y;
+		rectBtn.bottom = (int) (mid_point.y + ruler_width);
 	}
 }
