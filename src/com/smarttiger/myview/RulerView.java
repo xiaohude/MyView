@@ -17,6 +17,7 @@ import android.view.WindowManager;
 
 public class RulerView extends View {
 
+	private boolean isCalibration = false;
 	private float calibration = 1;//用来校准尺子的基数
 	private float calibration_saved;
 	private float xmm_saved;
@@ -25,7 +26,7 @@ public class RulerView extends View {
 	private float xmm;//毫米单位
 	private float ruler_length;
 	private float ruler_width;
-	private PointF mid_point = new PointF(0, 0);
+	private PointF mid_point = new PointF(0, 0);//尺子刻度中间点的坐标，已此坐标为参考点方便绘画移动等。
 	private Rect rect = new Rect();
 	private float angle_rotate = 0;
 	private float angle_initial;
@@ -41,6 +42,7 @@ public class RulerView extends View {
 	private PointF mid_point_saved = new PointF();
 	private String MODE = "NONE";
 	private Paint paint;
+	private Paint paintTxt;
 	private Paint paintBtn;
 	
 
@@ -67,14 +69,21 @@ public class RulerView extends View {
 		ruler_length = length * xmm * 10; // 设置一开始为length厘米的尺子
 		ruler_width = 180;
 		mid_point.set((float) (ruler_length * 0.5), 0);
-		rect = new Rect(0, 0, (int) (ruler_length), (int) ruler_width);
-		rectBtn = new Rect((int)ruler_length, 0, (int)(ruler_length+ruler_width), (int)ruler_width);
+		rect = new Rect((int)(mid_point.x-ruler_length/2), 
+						(int) mid_point.y, 
+						(int)(mid_point.x+ruler_length/2), 
+						(int)(mid_point.y+ruler_width));
+		rectBtn = new Rect(rect.right, rect.top, (int)(rect.right+ruler_width), rect.bottom);
 		
 		paint = new Paint();
 		paint.setColor(Color.GREEN);
 		paint.setStyle(Style.STROKE);
 		paint.setStrokeWidth(2);
-		paint.setTextSize(30);
+		
+		paintTxt = new Paint();
+		paintTxt.setColor(Color.GREEN);
+		paintTxt.setStyle(Style.FILL);
+		paintTxt.setTextSize(30);
 		
 		paintBtn = new Paint();
 		paintBtn.setColor(Color.GREEN);
@@ -83,14 +92,20 @@ public class RulerView extends View {
 		paintBtn.setTextSize(50);
 		paintBtn.setTextAlign(Paint.Align.CENTER);//文本居中
 		
-//		HorizontalRuler();
 	}
+	
+	//用于方便校准尺子，将尺子竖右边，并设置8个长度。
 	private void HorizontalRuler() {
+		ruler_length = 8 * xmm * 10;
 		WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
 		int width = wm.getDefaultDisplay().getWidth();
-		mid_point.set((float) (width-ruler_width), ruler_length/2);
+		mid_point.set((float) (width-80), ruler_length/2+4);
 		angle_rotate = 90;
-		
+		rect = new Rect((int)(mid_point.x-ruler_length/2), 
+						(int) mid_point.y, 
+						(int)(mid_point.x+ruler_length/2), 
+						(int)(mid_point.y+ruler_width));
+		rectBtn = new Rect(rect.right, rect.top, (int)(rect.right+ruler_width), rect.bottom);
 	}
 	
 	private static final String SAVE_CALIBRATION = "save_calibration";
@@ -107,31 +122,50 @@ public class RulerView extends View {
 		canvas.save();
 		canvas.rotate(angle_rotate, mid_point.x, mid_point.y);
 		canvas.drawRect(rect, paint);//画尺子边界
-		for (int i = 0; i < ruler_length / xmm; i++) {
-			float Left = mid_point.x - ruler_length / 2;
-			if (i % 10 == 0 && i != 0) {
-				canvas.drawLine(Left + i * xmm, mid_point.y, Left + i * xmm,
-						mid_point.y + 50, paint);
-				canvas.drawText(Integer.toString(i / 10), Left + i * xmm,
-						mid_point.y + 55, paint);
-			} else if (i == 0) {
-				canvas.drawLine(Left + i * xmm, mid_point.y, Left + i * xmm,
-						mid_point.y + 50, paint);
-				canvas.drawText(Integer.toString(i / 5) + "cm", Left + i * xmm,
-						mid_point.y + 55, paint);
-			} else {
-				canvas.drawLine(Left + i * xmm, mid_point.y, Left + i * xmm,
-						mid_point.y + 30, paint);
-			}
-		}
 		
-		canvas.drawRect(rectBtn, paint);
-		canvas.drawText("校准", mid_point.x+ruler_length/2+ruler_width/2, mid_point.y+ruler_width/2+15,  paintBtn);
+		if(!isCalibration) {
+			for (int i = 0; i < ruler_length / xmm; i++) {
+				float Left = mid_point.x - ruler_length / 2;
+				if (i % 10 == 0 && i != 0) {
+					canvas.drawLine(Left + i * xmm, mid_point.y, Left + i * xmm,
+							mid_point.y + 60, paint);
+					canvas.drawText(Integer.toString(i / 10), Left + i * xmm,
+							mid_point.y + 70, paintTxt);
+				} else if (i == 0) {
+					canvas.drawLine(Left + i * xmm, mid_point.y, Left + i * xmm,
+							mid_point.y + 60, paint);
+					canvas.drawText(Integer.toString(i / 5) + "cm", Left + i * xmm,
+							mid_point.y + 70, paintTxt);
+				} else {
+					canvas.drawLine(Left + i * xmm, mid_point.y, Left + i * xmm,
+							mid_point.y + 30, paint);
+				}
+			}
+			canvas.drawRect(rectBtn, paint);
+			canvas.drawText("校准", mid_point.x+ruler_length/2+ruler_width/2, mid_point.y+ruler_width/2+15,  paintBtn);
+		}
+		else {
+			for (int i = 0; i < ruler_length / xmm; i++) {
+				float Left = mid_point.x - ruler_length / 2;
+				if (i == 63) {
+					canvas.drawLine(Left + i * xmm, mid_point.y, Left + i * xmm, mid_point.y + 60, paint);
+					canvas.drawText("1,5元", Left + i * xmm -30, mid_point.y + 90, paintTxt);
+					canvas.drawText("高度", Left + i * xmm -30, mid_point.y + 125, paintTxt);
+				} else if (i == 70) {
+					canvas.drawLine(Left + i * xmm, mid_point.y, Left + i * xmm, mid_point.y + 60, paint);
+					canvas.drawText("10元高度" , Left + i * xmm -30, mid_point.y + 90, paintTxt);
+					canvas.drawText("20元高度", Left + i * xmm -30, mid_point.y + 125, paintTxt);
+				} else {
+					canvas.drawLine(Left + i * xmm, mid_point.y, Left + i * xmm, mid_point.y + 15, paint);
+				}
+			}
+			canvas.drawRect(rectBtn, paint);
+			canvas.drawText("完成", mid_point.x+ruler_length/2+ruler_width/2, mid_point.y+ruler_width/2+15,  paintBtn);
+		}
 		
 		canvas.restore();
 	}
 
-	
 	
 	public boolean onTouchEvent(MotionEvent event) {
 		PointF touchPoint1;
@@ -143,7 +177,16 @@ public class RulerView extends View {
 				MODE = "DRAG";
 				finger_first_down.set(event.getX(), event.getY());
 				mid_point_saved.set(mid_point);
-			} else {
+			}
+			else if(rectBtn.contains((int) touchPoint1.x, (int) touchPoint1.y)) {
+				if(isCalibration)
+					saveCalibration();
+				else
+					HorizontalRuler();
+				isCalibration = !isCalibration;
+				invalidate();
+			}
+			else {
 				return false;
 			}
 			break;
@@ -163,7 +206,8 @@ public class RulerView extends View {
 				mid_point_between_fingers_down.set(
 						(event.getX(0) + event.getX(1)) / 2,
 						(event.getY(0) + event.getY(1)) / 2);
-			} else {
+			}
+			else {
 				return false;
 			}
 			break;
@@ -191,10 +235,13 @@ public class RulerView extends View {
 						- mid_point_between_fingers_down.x, mid_point_saved.y
 						+ mid_point_between_fingers.y
 						- mid_point_between_fingers_down.y);
-				angle_rotate = angle_saved + rotation(event) - angle_initial;
+				if(!isCalibration)
+					angle_rotate = angle_saved + rotation(event) - angle_initial;
 				ruler_length = distance_saved * distance(event) / distance_initial;
-				calibration = calibration_saved * distance(event) / distance_initial;
-				xmm = xmm_saved *  calibration;
+				if(isCalibration) {
+					calibration = calibration_saved * distance(event) / distance_initial;
+					xmm = xmm_saved *  calibration;
+				}
 				renewRect();
 			}
 			invalidate();
@@ -204,8 +251,6 @@ public class RulerView extends View {
 				MODE = "NONE";
 			break;
 		case MotionEvent.ACTION_POINTER_1_UP:
-			if (MODE == "ZOOM")
-				saveCalibration();
 			MultiToSingle = true;
 //			MODE = "DRAG";
 //			System.out.println(MODE);
@@ -223,6 +268,7 @@ public class RulerView extends View {
 		xmm = xmm_saved * calibration; // 单位都是pixal
 	}
 
+	/** 获取两指成线的水平角度 */
 	private float rotation(MotionEvent event) {
 		double delta_x = (event.getX(0) - event.getX(1));
 		double delta_y = (event.getY(0) - event.getY(1));
