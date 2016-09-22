@@ -126,19 +126,22 @@ public class RulerView extends View {
 		if(!isCalibration) {
 			for (int i = 0; i < ruler_length / xmm; i++) {
 				float Left = mid_point.x - ruler_length / 2;
-				if (i % 10 == 0 && i != 0) {
-					canvas.drawLine(Left + i * xmm, mid_point.y, Left + i * xmm,
-							mid_point.y + 60, paint);
-					canvas.drawText(Integer.toString(i / 10), Left + i * xmm,
-							mid_point.y + 70, paintTxt);
-				} else if (i == 0) {
-					canvas.drawLine(Left + i * xmm, mid_point.y, Left + i * xmm,
-							mid_point.y + 60, paint);
-					canvas.drawText(Integer.toString(i / 5) + "cm", Left + i * xmm,
-							mid_point.y + 70, paintTxt);
+				if (i == 0) {
+					canvas.drawLine(Left + i * xmm, mid_point.y,
+									Left + i * xmm, mid_point.y + 70, paint);
+					canvas.drawText("0cm",
+									Left + i * xmm, mid_point.y + 80, paintTxt);
+				} else if (i % 10 == 0) {
+					canvas.drawLine(Left + i * xmm, mid_point.y,
+									Left + i * xmm, mid_point.y + 70, paint);
+					canvas.drawText(Integer.toString(i / 10),
+									Left + i * xmm, mid_point.y + 80, paintTxt);
+				} else if ((i+5) % 10 == 0) {
+					canvas.drawLine(Left + i * xmm, mid_point.y,
+									Left + i * xmm, mid_point.y + 50, paint);
 				} else {
-					canvas.drawLine(Left + i * xmm, mid_point.y, Left + i * xmm,
-							mid_point.y + 30, paint);
+					canvas.drawLine(Left + i * xmm, mid_point.y,
+									Left + i * xmm, mid_point.y + 30, paint);
 				}
 			}
 			canvas.drawRect(rectBtn, paint);
@@ -147,16 +150,31 @@ public class RulerView extends View {
 		else {
 			for (int i = 0; i < ruler_length / xmm; i++) {
 				float Left = mid_point.x - ruler_length / 2;
-				if (i == 63) {
-					canvas.drawLine(Left + i * xmm, mid_point.y, Left + i * xmm, mid_point.y + 60, paint);
-					canvas.drawText("1,5元", Left + i * xmm -30, mid_point.y + 90, paintTxt);
-					canvas.drawText("高度", Left + i * xmm -30, mid_point.y + 125, paintTxt);
+				if (i == 0) {
+					canvas.drawLine(Left + i * xmm, mid_point.y,
+									Left + i * xmm, mid_point.y + 35, paint);
+					canvas.drawText("0cm",
+									Left + i * xmm, mid_point.y + 80, paintTxt);
+				} else if (i == 63) {
+					canvas.drawLine(Left + i * xmm, mid_point.y,
+									Left + i * xmm, mid_point.y + 60, paint);
+					canvas.drawText("1,5元",
+									Left + i * xmm -30, mid_point.y + 90, paintTxt);
+					canvas.drawText("高度",
+									Left + i * xmm -30, mid_point.y + 125, paintTxt);
 				} else if (i == 70) {
-					canvas.drawLine(Left + i * xmm, mid_point.y, Left + i * xmm, mid_point.y + 60, paint);
-					canvas.drawText("10元高度" , Left + i * xmm -30, mid_point.y + 90, paintTxt);
-					canvas.drawText("20元高度", Left + i * xmm -30, mid_point.y + 125, paintTxt);
+					canvas.drawLine(Left + i * xmm, mid_point.y,
+									Left + i * xmm, mid_point.y + 60, paint);
+					canvas.drawText("10元高度" ,
+									Left + i * xmm -30, mid_point.y + 90, paintTxt);
+					canvas.drawText("20元高度",
+									Left + i * xmm -30, mid_point.y + 125, paintTxt);
+				} else if (i % 10 == 0) {
+					canvas.drawLine(Left + i * xmm, mid_point.y,
+									Left + i * xmm, mid_point.y + 35, paint);
 				} else {
-					canvas.drawLine(Left + i * xmm, mid_point.y, Left + i * xmm, mid_point.y + 15, paint);
+					canvas.drawLine(Left + i * xmm, mid_point.y,
+									Left + i * xmm, mid_point.y + 15, paint);
 				}
 			}
 			canvas.drawRect(rectBtn, paint);
