@@ -22,6 +22,8 @@ public class RulerView extends View {
 	private float calibration_saved;
 	private float xmm_saved;
 	private Rect rectBtn;
+	private Rect rectAdd;
+	private Rect rectSubtract;
 	
 	private float xmm;//毫米单位
 	private float ruler_length;
@@ -74,6 +76,8 @@ public class RulerView extends View {
 						(int)(mid_point.x+ruler_length/2), 
 						(int)(mid_point.y+ruler_width));
 		rectBtn = new Rect(rect.right, rect.top, (int)(rect.right+ruler_width), rect.bottom);
+		rectAdd = new Rect((int) (rect.right - ruler_width/2), (int) (rect.top - ruler_width/2), rect.right, rect.top);
+		rectSubtract = new Rect((int) (rect.right - ruler_width/2), (int) (rect.bottom), rect.right, (int) (rect.bottom + ruler_width/2));
 		
 		paint = new Paint();
 		paint.setColor(Color.GREEN);
@@ -106,6 +110,9 @@ public class RulerView extends View {
 						(int)(mid_point.x+ruler_length/2), 
 						(int)(mid_point.y+ruler_width));
 		rectBtn = new Rect(rect.right, rect.top, (int)(rect.right+ruler_width), rect.bottom);
+		rectAdd = new Rect((int) (rect.right + ruler_width/2), (int) (rect.bottom), (int)(rect.right + ruler_width), (int) (rect.bottom + ruler_width/2));
+		rectSubtract = new Rect((int) (rect.right), (int) (rect.bottom), (int)(rect.right + ruler_width/2), (int) (rect.bottom + ruler_width/2));
+		
 	}
 	
 	private static final String SAVE_CALIBRATION = "save_calibration";
@@ -179,6 +186,13 @@ public class RulerView extends View {
 			}
 			canvas.drawRect(rectBtn, paint);
 			canvas.drawText("完成", mid_point.x+ruler_length/2+ruler_width/2, mid_point.y+ruler_width/2+15,  paintBtn);
+			
+			canvas.drawRect(rectAdd, paint);
+			canvas.drawText("+", rectAdd.left+ruler_width/4, rectAdd.top+ruler_width/4+15, paintBtn);
+			
+			canvas.drawRect(rectSubtract, paint);
+			canvas.drawText("-", rectSubtract.left+ruler_width/4, rectSubtract.top+ruler_width/4+15, paintBtn);
+			
 		}
 		
 		canvas.restore();
@@ -202,6 +216,16 @@ public class RulerView extends View {
 				else
 					HorizontalRuler();
 				isCalibration = !isCalibration;
+				invalidate();
+			}
+			else if(rectAdd.contains((int) touchPoint1.x, (int) touchPoint1.y)) {
+				xmm = (float) (xmm + 0.03);
+				calibration = xmm / xmm_saved;
+				invalidate();
+			}
+			else if(rectSubtract.contains((int) touchPoint1.x, (int) touchPoint1.y)) {
+				xmm = (float) (xmm - 0.03);
+				calibration = xmm / xmm_saved;
 				invalidate();
 			}
 			else {
@@ -253,9 +277,11 @@ public class RulerView extends View {
 						- mid_point_between_fingers_down.x, mid_point_saved.y
 						+ mid_point_between_fingers.y
 						- mid_point_between_fingers_down.y);
+				//校准过程中不旋转尺子
 				if(!isCalibration)
 					angle_rotate = angle_saved + rotation(event) - angle_initial;
 				ruler_length = distance_saved * distance(event) / distance_initial;
+				//校准时，改变calibration和单位xmm
 				if(isCalibration) {
 					calibration = calibration_saved * distance(event) / distance_initial;
 					xmm = xmm_saved *  calibration;
@@ -341,5 +367,15 @@ public class RulerView extends View {
 		rectBtn.right = (int) (mid_point.x + ruler_length/2 + ruler_width);
 		rectBtn.top = (int) mid_point.y;
 		rectBtn.bottom = (int) (mid_point.y + ruler_width);
+		
+		rectAdd.left = (int) (rect.right + ruler_width/2);
+		rectAdd.right = (int) (rect.right + ruler_width);
+		rectAdd.top = (int) (rect.bottom);
+		rectAdd.bottom = (int) (rect.bottom + ruler_width/2);
+		
+		rectSubtract.left = (int) (rect.right);
+		rectSubtract.right = (int) (rect.right + ruler_width/2);
+		rectSubtract.top = (int) (rect.bottom);
+		rectSubtract.bottom = (int) (rect.bottom + ruler_width/2);
 	}
 }
