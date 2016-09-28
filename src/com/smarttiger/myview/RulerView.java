@@ -198,7 +198,7 @@ public class RulerView extends View {
 		canvas.restore();
 	}
 
-	
+	private long mLastTime, mCurTime;
 	public boolean onTouchEvent(MotionEvent event) {
 		PointF touchPoint1;
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
@@ -209,6 +209,14 @@ public class RulerView extends View {
 				MODE = "DRAG";
 				finger_first_down.set(event.getX(), event.getY());
 				mid_point_saved.set(mid_point);
+
+				//双击尺子置横竖
+				mLastTime = mCurTime; 
+				mCurTime = System.currentTimeMillis();
+				if (mCurTime - mLastTime < 300) {
+					angle_rotate = angle_rotate==90?0:90;
+					invalidate();
+				}
 			}
 			else if(rectBtn.contains((int) touchPoint1.x, (int) touchPoint1.y)) {
 				if(isCalibration)
