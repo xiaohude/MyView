@@ -16,6 +16,7 @@ public class MainActivity extends Activity {
 	private Bezier2 bezier2;
 	private BezierHeart bezierHeart;
 	private RulerView rulerView;
+	private FractalView fractalView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,7 @@ public class MainActivity extends Activity {
 		bezier2 = (Bezier2) findViewById(R.id.bezier2);
 		bezierHeart = (BezierHeart) findViewById(R.id.bezierHeart);
 		rulerView = (RulerView) findViewById(R.id.rulerView);
+		fractalView = (FractalView) findViewById(R.id.fractalView);
 		
 		inputButton.setOnClickListener(new OnClickListener() {
 			
@@ -64,6 +66,9 @@ public class MainActivity extends Activity {
 				else if(text.equals("ruler")) {
 					showView(rulerView);
 				}
+				else if(text.equals("fractal")) {
+					showView(fractalView);
+				}
 			}
 		});
 	}
@@ -73,6 +78,7 @@ public class MainActivity extends Activity {
 		bezier2.setVisibility(View.GONE);
 		bezierHeart.setVisibility(View.GONE);
 		rulerView.setVisibility(View.GONE);
+		fractalView.setVisibility(View.GONE);
 		view.setVisibility(View.VISIBLE);
 	}
 	
