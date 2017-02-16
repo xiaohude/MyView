@@ -55,14 +55,19 @@ public class FractalView extends View {
 //		draw1(canvas, -300, 0, 300, 0, depth);
 //		draw1(canvas, 300, 0, 0, -520, depth);
 //		draw1(canvas, 0, -520, -300, 0, depth);
+        
+        
 		draw1(canvas, 300, 0, -300, 0, depth);
 		draw1(canvas, 0, -520, 300, 0, depth);
 		draw1(canvas, -300, 0, 0, -520, depth);
 		
-		
 
 //		draw2(canvas, 200, 300, 200, depth);
 //		draw2(canvas, -100, 100, 200, depth);
+		
+		
+//		draw3(canvas, -300, 520, 300, 520, 0, 0, depth);
+		
 	}
 
 	
@@ -138,5 +143,61 @@ public class FractalView extends View {
         draw2(canvas, (int) x88, (int) y88, (int) m,depth-1);  
         }  
   
+    }
+	
+	
+	public void draw3(Canvas canvas, int x1,int y1,int x2,int y2,int x3,int y3,int depth){//三角形   keleyi.com
+        
+        double s = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));  
+        canvas.drawLine(x1,y1,x2,y2,mPaint);  
+        canvas.drawLine(x2,y2,x3,y3,mPaint);  
+        canvas.drawLine(x1,y1,x3,y3,mPaint);  
+//      if(s<3)  
+//          return;  
+        if (depth<=1)  
+            return;  
+        else  
+        {  
+        /* 
+         * 上面的三角形 
+         */  
+        double x11=(x1*3+x2)/4;  
+        double y11=y1-(s/4)*Math.sqrt(3);  
+          
+        double x12=(x1+x2*3)/4;  
+        double y12=y11;  
+          
+        double x13=(x1+x2)/2;  
+        double y13=y1;  
+          
+        /* 
+         * 左边的三角形 
+         */  
+        double x21=x1-s/4;  
+        double y21=(y1+y3)/2;  
+          
+        double x22=x1+s/4;  
+        double y22=y21;  
+          
+        double x23=x1;  
+        double y23=y3;  
+          
+        /* 
+         * 右边的三角形 
+         */  
+        double x31=x2+s/4;  
+        double y31=(y1+y3)/2;  
+          
+        double x32=x2-s/4;  
+        double y32=y21;  
+          
+        double x33=x2;  
+        double y33=y3;  
+          
+          
+        draw3(canvas, (int)x11,(int)y11,(int)x12,(int)y12, (int)x13, (int)y13, depth-1);  
+        draw3(canvas, (int)x21,(int)y21,(int)x22,(int)y22, (int)x23, (int)y23, depth-1);  
+        draw3(canvas, (int)x31,(int)y31,(int)x32,(int)y32, (int)x33, (int)y33, depth-1);  
+        }  
     }
 }
