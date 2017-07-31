@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 public class MainActivity extends Activity {
 
@@ -17,6 +18,7 @@ public class MainActivity extends Activity {
 	private BezierHeart bezierHeart;
 	private RulerView rulerView;
 	private FractalView fractalView;
+	private ProgressBar progressBar;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +27,6 @@ public class MainActivity extends Activity {
 		
 		initView();
 		
-
-//		showLeafLoading();
-//		showSiderBar();
 	}
 	
 	private boolean bezier2Mode = false;
@@ -39,6 +38,7 @@ public class MainActivity extends Activity {
 		bezierHeart = (BezierHeart) findViewById(R.id.bezierHeart);
 		rulerView = (RulerView) findViewById(R.id.rulerView);
 		fractalView = (FractalView) findViewById(R.id.fractalView);
+		progressBar = (ProgressBar) findViewById(R.id.progress);
 		
 		inputButton.setOnClickListener(new OnClickListener() {
 			
@@ -69,6 +69,9 @@ public class MainActivity extends Activity {
 				else if(text.equals("fractal")) {
 					showView(fractalView);
 				}
+				else if(text.equals("progress")) {
+					showView(progressBar);
+				}
 			}
 		});
 	}
@@ -79,6 +82,7 @@ public class MainActivity extends Activity {
 		bezierHeart.setVisibility(View.GONE);
 		rulerView.setVisibility(View.GONE);
 		fractalView.setVisibility(View.GONE);
+		progressBar.setVisibility(View.GONE);
 		view.setVisibility(View.VISIBLE);
 	}
 	
@@ -88,10 +92,21 @@ public class MainActivity extends Activity {
 		startActivity(intent);
 	}
 	
+	
+	// The action to start AddAccountActivity from ContactsDAV.
+    public static final String ACTION_ADD_ACCOUNT = "davdroid.intent.action.ADD_ACCOUNT";
+    // ContactsDAV at.bitfire.davdroid.Constants#EXTRA_ACCOUNT_TYPE.
+    public static final String EXTRA_ACCOUNT_TYPE = "extra_account_type";
+    // The account type of iCloud, Sync by CardDAV.
+    public static final String ICLOUD_ACCOUNT_TYPE = "com.zui.davdroid.account.icloud";
 	private void showSiderBar()
 	{
 		Intent intent = new Intent(this, SiderBarActivity.class);
 		startActivity(intent);
+//		Intent intent = new Intent(ACTION_ADD_ACCOUNT);
+//        intent.putExtra(EXTRA_ACCOUNT_TYPE, ICLOUD_ACCOUNT_TYPE);
+//        startActivity(intent);
+		overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
 	}
 	
 }

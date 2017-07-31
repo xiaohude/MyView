@@ -20,7 +20,7 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
 	        android:layout_weight="1"
-	        android:hint="(1,2,heart,leaf,siderbar,ruler,fractal)"
+	        android:hint="(1,2,heart,leaf,siderbar,ruler,fractal,progress)"
             />
         <Button 
             android:id="@+id/input_button"
@@ -65,8 +65,19 @@
 	        android:id="@+id/fractalView"
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
-	        android:visibility="visible"
+	        android:visibility="gone"
 	        />
+	    
+	    
+		<ProgressBar 
+		    android:id="@+id/progress"
+		    android:layout_width="75dp"
+		    android:layout_height="75dp"
+		    android:layout_centerInParent="true"
+		    android:layout_gravity="center"
+		    android:indeterminateDrawable="@drawable/common_progressbar_rotate_orange_bg"
+		    android:visibility="visible"/>"
+		
     </RelativeLayout>
 
 </RelativeLayout>
