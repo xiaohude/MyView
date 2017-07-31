@@ -19,6 +19,7 @@ public class MainActivity extends Activity {
 	private RulerView rulerView;
 	private FractalView fractalView;
 	private ProgressBar progressBar;
+	private ProgressBarView progressBar1;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class MainActivity extends Activity {
 		rulerView = (RulerView) findViewById(R.id.rulerView);
 		fractalView = (FractalView) findViewById(R.id.fractalView);
 		progressBar = (ProgressBar) findViewById(R.id.progress);
+		progressBar1 = (ProgressBarView) findViewById(R.id.progress1);
 		
 		inputButton.setOnClickListener(new OnClickListener() {
 			
@@ -72,6 +74,9 @@ public class MainActivity extends Activity {
 				else if(text.equals("progress")) {
 					showView(progressBar);
 				}
+				else if(text.equals("progress1")) {
+					showView(progressBar1);
+				}
 			}
 		});
 	}
@@ -83,6 +88,7 @@ public class MainActivity extends Activity {
 		rulerView.setVisibility(View.GONE);
 		fractalView.setVisibility(View.GONE);
 		progressBar.setVisibility(View.GONE);
+		progressBar1.setVisibility(View.GONE);
 		view.setVisibility(View.VISIBLE);
 	}
 	
