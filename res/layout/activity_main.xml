@@ -22,6 +22,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_weight="1"
 	        android:hint="(1,2,heart,leaf,siderbar,ruler,fractal,progress,progress1)"
+	        android:text="progress2"
             />
         <Button 
             android:id="@+id/input_button"
@@ -32,6 +33,7 @@
     </LinearLayout>
     
     <RelativeLayout
+        android:id="@+id/view_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/input_layout"
@@ -69,7 +71,6 @@
 	        android:visibility="gone"
 	        />
 	    
-	    
 		<ProgressBar 
 		    android:id="@+id/progress"
 		    android:layout_width="75dp"
@@ -85,8 +86,18 @@
 		    android:layout_height="60dp"
 		    android:layout_centerInParent="true"
 		    android:layout_gravity="center"
-	        android:visibility="visible"
+	        android:visibility="gone"
 	        />"
+	        
+        <com.smarttiger.myview.CircleProgressImageView
+            android:id="@+id/progress2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+		    android:layout_centerInParent="true"
+		    android:layout_gravity="center"
+            android:padding="22dp"
+            android:src="@drawable/privacy_phone_boost_nor"
+	        android:visibility="visible" />
 		
     </RelativeLayout>
 

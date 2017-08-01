@@ -3,16 +3,21 @@ package com.smarttiger.myview;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 public class MainActivity extends Activity {
 
 	private EditText inputEdit;
 	private Button inputButton;
+	
+	private RelativeLayout viewLayout;
 	private Bezier1 bezier1;
 	private Bezier2 bezier2;
 	private BezierHeart bezierHeart;
@@ -20,6 +25,7 @@ public class MainActivity extends Activity {
 	private FractalView fractalView;
 	private ProgressBar progressBar;
 	private ProgressBarView progressBar1;
+	private CircleProgressImageView progressBar2;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +40,7 @@ public class MainActivity extends Activity {
 	private void initView() {
 		inputEdit = (EditText) findViewById(R.id.input_edit);
 		inputButton = (Button) findViewById(R.id.input_button);
+		viewLayout = (RelativeLayout) findViewById(R.id.view_layout);
 		bezier1 = (Bezier1) findViewById(R.id.bezier1);
 		bezier2 = (Bezier2) findViewById(R.id.bezier2);
 		bezierHeart = (BezierHeart) findViewById(R.id.bezierHeart);
@@ -41,6 +48,7 @@ public class MainActivity extends Activity {
 		fractalView = (FractalView) findViewById(R.id.fractalView);
 		progressBar = (ProgressBar) findViewById(R.id.progress);
 		progressBar1 = (ProgressBarView) findViewById(R.id.progress1);
+		progressBar2 = (CircleProgressImageView) findViewById(R.id.progress2);
 		
 		inputButton.setOnClickListener(new OnClickListener() {
 			
@@ -77,18 +85,19 @@ public class MainActivity extends Activity {
 				else if(text.equals("progress1")) {
 					showView(progressBar1);
 				}
+				else if(text.equals("progress2")) {
+					showView(progressBar2);
+					progressBar2.setShouldShowProgress(true);
+					new ProgressThread().start();
+				}
 			}
 		});
 	}
 	
 	private void showView(View view) {
-		bezier1.setVisibility(View.GONE);
-		bezier2.setVisibility(View.GONE);
-		bezierHeart.setVisibility(View.GONE);
-		rulerView.setVisibility(View.GONE);
-		fractalView.setVisibility(View.GONE);
-		progressBar.setVisibility(View.GONE);
-		progressBar1.setVisibility(View.GONE);
+		for (int i = 0; i < viewLayout.getChildCount(); i++) {
+			viewLayout.getChildAt(i).setVisibility(View.GONE);
+		}
 		view.setVisibility(View.VISIBLE);
 	}
 	
@@ -114,5 +123,42 @@ public class MainActivity extends Activity {
 //        startActivity(intent);
 		overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
 	}
+	
+	
+	class ProgressThread extends Thread{
+        @Override
+        public void run() {
+            for(int i = 0; i < 60; i++){
+            	Message msg = new Message();
+            	msg.what = 0;
+            	msg.arg1 = i;
+                handler.sendMessage(msg);
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        	Message msg = new Message();
+        	msg.what = 1;
+            handler.sendMessage(msg);
+        }
+    };
+    
+	private Handler handler = new Handler(){
+	    @Override
+	    public void handleMessage(Message msg) {
+	        switch(msg.what){
+	            case 0:
+	            	int progress = msg.arg1;
+	            	progressBar2.setProgress(progress);
+	                break;
+	            case 1:
+	            	progressBar2.setShouldRippling(true);
+	                break;
+	            }
+	        }
+	};
 	
 }
