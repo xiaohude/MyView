@@ -1,4 +1,4 @@
-package com.smarttiger.myview;
+package com.smarttiger.progress;
 
 import android.animation.ValueAnimator;
 import android.content.Context;

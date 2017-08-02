@@ -3,4 +3,16 @@
     <declare-styleable name="CircleProgressImageView">
         <attr name="showProgress" format="boolean" />
     </declare-styleable>
+    
+    <declare-styleable name="BubbleBaseView">
+        <attr name="bubbleSize" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="BubbleProgressView">
+        <attr name="numSize" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="BubbleScanView">
+        <attr name="spriteRotateSpeed" format="float" />
+        <attr name="text" format="string" />
+        <attr name="scanTextSize" format="dimension" />
+    </declare-styleable>
 </resources>

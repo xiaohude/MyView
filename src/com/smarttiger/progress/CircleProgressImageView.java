@@ -1,4 +1,7 @@
-package com.smarttiger.myview;
+package com.smarttiger.progress;
+
+import com.smarttiger.myview.R;
+import com.smarttiger.myview.R.styleable;
 
 import android.content.Context;
 import android.content.res.TypedArray;

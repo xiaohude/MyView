@@ -1,5 +1,11 @@
 package com.smarttiger.myview;
 
+import com.smarttiger.progress.BubbleBaseView;
+import com.smarttiger.progress.BubbleProgressView;
+import com.smarttiger.progress.BubbleScanView;
+import com.smarttiger.progress.CircleProgressImageView;
+import com.smarttiger.progress.ProgressBarView;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +32,8 @@ public class MainActivity extends Activity {
 	private ProgressBar progressBar;
 	private ProgressBarView progressBar1;
 	private CircleProgressImageView progressBar2;
+	private BubbleScanView progressBar3;
+	private BubbleProgressView progressBar4;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,8 @@ public class MainActivity extends Activity {
 		progressBar = (ProgressBar) findViewById(R.id.progress);
 		progressBar1 = (ProgressBarView) findViewById(R.id.progress1);
 		progressBar2 = (CircleProgressImageView) findViewById(R.id.progress2);
+		progressBar3 = (BubbleScanView) findViewById(R.id.progress3);
+		progressBar4 = (BubbleProgressView) findViewById(R.id.progress4);
 		
 		inputButton.setOnClickListener(new OnClickListener() {
 			
@@ -79,7 +89,7 @@ public class MainActivity extends Activity {
 				else if(text.equals("fractal")) {
 					showView(fractalView);
 				}
-				else if(text.equals("progress")) {
+				else if(text.equals("progress0")) {
 					showView(progressBar);
 				}
 				else if(text.equals("progress1")) {
@@ -89,6 +99,19 @@ public class MainActivity extends Activity {
 					showView(progressBar2);
 					progressBar2.setShouldShowProgress(true);
 					new ProgressThread().start();
+				}
+				else if(text.equals("progress3")) {
+					showView(progressBar3);
+					progressBar3.startScanAnim();
+					new Handler().postDelayed(new Runnable(){    
+					    public void run() {    
+							progressBar3.finishScanAnim();
+					    }    
+					 }, 2000);  
+				}
+				else if(text.equals("progress4")) {
+					showView(progressBar4);
+					progressBar4.setProgress(80);
 				}
 			}
 		});
