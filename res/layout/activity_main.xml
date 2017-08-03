@@ -22,8 +22,8 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_weight="1"
-	        android:hint="(1,2,heart,leaf,siderbar,ruler,fractal,progress0-4)"
-	        android:text="progress4"
+	        android:hint="(1,2,heart,leaf,siderbar,ruler,fractal,progress0-5)"
+	        android:text="progress5"
             />
         <Button 
             android:id="@+id/input_button"
@@ -115,7 +115,15 @@
             android:layout_height="144dp"
 		    android:layout_centerInParent="true"
 		    android:layout_gravity="center"
-            app:bubbleSize="120dp" />
+            app:bubbleSize="120dp"
+	        android:visibility="gone" />
+        
+	    <com.smarttiger.progress.MemoryScanView
+	        android:id="@+id/progress5"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+		    android:layout_centerInParent="true"
+		    android:layout_gravity="center"/>
 		
     </RelativeLayout>
 
