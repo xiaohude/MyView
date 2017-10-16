@@ -35,6 +35,7 @@ public class MainActivity extends Activity {
 	private BubbleScanView progressBar3;
 	private BubbleProgressView progressBar4;
 	private MemoryScanView progressBar5;
+	private DynamicWave dynamicWave;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class MainActivity extends Activity {
 		progressBar3 = (BubbleScanView) findViewById(R.id.progress3);
 		progressBar4 = (BubbleProgressView) findViewById(R.id.progress4);
 		progressBar5 = (MemoryScanView) findViewById(R.id.progress5);
+		dynamicWave = (DynamicWave) findViewById(R.id.dynamicWave);
 		
 		inputButton.setOnClickListener(new OnClickListener() {
 			
@@ -119,6 +121,10 @@ public class MainActivity extends Activity {
 				else if(text.equals("progress5")) {
 					showView(progressBar5);
 					progressBar5.startCleanItemsAnim();
+				}
+				else if(text.equals("wave")) {
+					showView(dynamicWave);
+					dynamicWave.setProgress(60);
 				}
 			}
 		});
