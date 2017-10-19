@@ -132,8 +132,7 @@
             android:layout_width="120dp"
             android:layout_height="160dp"
 		    android:layout_centerInParent="true"
-		    android:layout_gravity="center"
-		    android:background="@drawable/screen_battery_10"/>
+		    android:layout_gravity="center"/>
 		
     </RelativeLayout>
 

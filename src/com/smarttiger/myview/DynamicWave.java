@@ -19,19 +19,21 @@ public class DynamicWave extends View {
     private static final int WAVE_PAINT_COLOR = 0xaa00cc00;
     // y = Asin(wx+b)+h
     // 振幅
-    private static float STRETCH_FACTOR_A = 10;
+    private static final float STRETCH_FACTOR_A = 10;
     private static final int OFFSET_Y = 0;
     // 第一条水波移动速度
     private static final int TRANSLATE_X_SPEED_ONE = 3;
     // 第二条水波移动速度
     private static final int TRANSLATE_X_SPEED_TWO = 2;
+    // 圆角半径
+    private static final int CORNER_RADIUS = 30;
     private float mCycleFactorW;
 
     private int mTotalWidth, mTotalHeight;
     // 可以加padding来调整背景位置
-    private int mPaddingTop = 70;
-    private int mPaddingBottom = 46;
-    private int mCenterY = 200; //水波纹井的深度
+    private int mPaddingTop = 0;
+    private int mPaddingBottom = 0;
+    private int mCenterY = 200; //水波纹的高度-电池电量高度，和canvas的坐标相反
     private float[] mYPositions;
     private float[] mResetOneYPositions;
     private float[] mResetTwoYPositions;
@@ -63,9 +65,6 @@ public class DynamicWave extends View {
     
     public void setProgress(int level) {  
         mCenterY = (int) (mTotalHeight * ((double) level / 100));  
-        
-        if(level >= 90)
-        	STRETCH_FACTOR_A = 5;
     }  
 
     @Override
@@ -75,20 +74,56 @@ public class DynamicWave extends View {
         canvas.setDrawFilter(mDrawFilter);
         
         resetPositonY();
-        for (int i = 0; i < mTotalWidth; i++) {
+        for (int x = 0; x < CORNER_RADIUS; x++) {
+        	float conerY = getRadiusY(CORNER_RADIUS - x);
+        	float startY1 = mPaddingTop + mTotalHeight - mResetOneYPositions[x] - mCenterY;
+        	float startY2 = mPaddingTop + mTotalHeight - mResetTwoYPositions[x] - mCenterY;
+        	float stopY = mPaddingTop + mTotalHeight - conerY;
 
-            // 减mCenterY只是为了控制波纹绘制的y的在屏幕的位置，大家可以改成一个变量，然后动态改变这个变量，从而形成波纹上升下降效果
+            if(mCenterY < mTotalHeight - CORNER_RADIUS - STRETCH_FACTOR_A) {
+            	startY1 = startY1 < stopY ? startY1 : stopY;
+            	startY2 = startY2 < stopY ? startY2 : stopY;
+            } else {
+            	startY1 = startY1 > conerY ? startY1 : conerY;
+            	startY2 = startY2 > conerY ? startY2 : conerY;
+            }
             // 绘制第一条水波纹
-            canvas.drawLine(
-            		i, mPaddingTop + mTotalHeight - mResetOneYPositions[i] - mCenterY, 
-            		i, mPaddingTop + mTotalHeight,
-                    mWavePaint);
-
+            canvas.drawLine(x, startY1, x, stopY, mWavePaint);
             // 绘制第二条水波纹
-            canvas.drawLine(
-            		i, mPaddingTop + mTotalHeight - mResetTwoYPositions[i] - mCenterY, 
-            		i, mPaddingTop + mTotalHeight,
-                    mWavePaint);
+            canvas.drawLine(x, startY2, x, stopY, mWavePaint);
+        }
+        for (int x = CORNER_RADIUS; x < mTotalWidth - CORNER_RADIUS; x++) {
+        	// 减mCenterY只是为了控制波纹绘制的y的在屏幕的位置，大家可以改成一个变量，然后动态改变这个变量，从而形成波纹上升下降效果
+        	// 绘制第一条水波纹
+        	canvas.drawLine(
+        			x, mPaddingTop + mTotalHeight - mResetOneYPositions[x] - mCenterY, 
+        			x, mPaddingTop + mTotalHeight,
+        			mWavePaint);
+        	// 绘制第二条水波纹
+        	canvas.drawLine(
+        			x, mPaddingTop + mTotalHeight - mResetTwoYPositions[x] - mCenterY, 
+        			x, mPaddingTop + mTotalHeight,
+        			mWavePaint);
+        }
+        for (int x = mTotalWidth - CORNER_RADIUS; x < mTotalWidth; x++) {
+
+        	float conerY = getRadiusY(CORNER_RADIUS - mTotalWidth + x);
+        	float startY1 = mPaddingTop + mTotalHeight - mResetOneYPositions[x] - mCenterY;
+        	float startY2 = mPaddingTop + mTotalHeight - mResetTwoYPositions[x] - mCenterY;
+        	float stopY = mPaddingTop + mTotalHeight - conerY;
+
+            if(mCenterY < mTotalHeight - CORNER_RADIUS - STRETCH_FACTOR_A) {
+            	startY1 = startY1 < stopY ? startY1 : stopY;
+            	startY2 = startY2 < stopY ? startY2 : stopY;
+            } else {
+            	startY1 = startY1 > conerY ? startY1 : conerY;
+            	startY2 = startY2 > conerY ? startY2 : conerY;
+            }
+        	
+        	// 绘制第一条水波纹
+            canvas.drawLine(x, startY1, x, stopY, mWavePaint);
+            // 绘制第二条水波纹
+            canvas.drawLine(x, startY2, x, stopY, mWavePaint);
         }
         
 
@@ -119,6 +154,13 @@ public class DynamicWave extends View {
         System.arraycopy(mYPositions, mXTwoOffset, mResetTwoYPositions, 0,
                 yTwoInterval);
         System.arraycopy(mYPositions, 0, mResetTwoYPositions, yTwoInterval, mXTwoOffset);
+    }
+    
+    // 获取圆角矩形，圆角对应的y值。
+    private float getRadiusY(float x) {
+    	float y;
+    	y = (float) Math.sqrt((CORNER_RADIUS*CORNER_RADIUS) - (x*x));
+    	return CORNER_RADIUS - y;
     }
 
     @Override
