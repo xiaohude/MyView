@@ -16,9 +16,10 @@ import android.view.View;
 public class DynamicWave extends View {
 
     // 波纹颜色
-    private static final int WAVE_PAINT_COLOR = 0x8800aa00;
+    private static final int WAVE_PAINT_COLOR = 0xaa00cc00;
     // y = Asin(wx+b)+h
-    private static final float STRETCH_FACTOR_A = 20;
+    // 振幅
+    private static float STRETCH_FACTOR_A = 10;
     private static final int OFFSET_Y = 0;
     // 第一条水波移动速度
     private static final int TRANSLATE_X_SPEED_ONE = 3;
@@ -27,7 +28,10 @@ public class DynamicWave extends View {
     private float mCycleFactorW;
 
     private int mTotalWidth, mTotalHeight;
-    private int mCenterY = 200; //水波纹的深度
+    // 可以加padding来调整背景位置
+    private int mPaddingTop = 70;
+    private int mPaddingBottom = 46;
+    private int mCenterY = 200; //水波纹井的深度
     private float[] mYPositions;
     private float[] mResetOneYPositions;
     private float[] mResetTwoYPositions;
@@ -54,10 +58,14 @@ public class DynamicWave extends View {
         // 设置画笔颜色
         mWavePaint.setColor(WAVE_PAINT_COLOR);
         mDrawFilter = new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        
     }
     
     public void setProgress(int level) {  
         mCenterY = (int) (mTotalHeight * ((double) level / 100));  
+        
+        if(level >= 90)
+        	STRETCH_FACTOR_A = 5;
     }  
 
     @Override
@@ -65,20 +73,24 @@ public class DynamicWave extends View {
         super.onDraw(canvas);
         // 从canvas层面去除绘制时锯齿
         canvas.setDrawFilter(mDrawFilter);
+        
         resetPositonY();
         for (int i = 0; i < mTotalWidth; i++) {
 
             // 减mCenterY只是为了控制波纹绘制的y的在屏幕的位置，大家可以改成一个变量，然后动态改变这个变量，从而形成波纹上升下降效果
             // 绘制第一条水波纹
-            canvas.drawLine(i, mTotalHeight - mResetOneYPositions[i] - mCenterY, i,
-                    mTotalHeight,
+            canvas.drawLine(
+            		i, mPaddingTop + mTotalHeight - mResetOneYPositions[i] - mCenterY, 
+            		i, mPaddingTop + mTotalHeight,
                     mWavePaint);
 
             // 绘制第二条水波纹
-            canvas.drawLine(i, mTotalHeight - mResetTwoYPositions[i] - mCenterY, i,
-                    mTotalHeight,
+            canvas.drawLine(
+            		i, mPaddingTop + mTotalHeight - mResetTwoYPositions[i] - mCenterY, 
+            		i, mPaddingTop + mTotalHeight,
                     mWavePaint);
         }
+        
 
         // 改变两条波纹的移动点
         mXOneOffset += mXOffsetSpeedOne;
@@ -114,7 +126,7 @@ public class DynamicWave extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         // 记录下view的宽高
         mTotalWidth = w;
-        mTotalHeight = h;
+        mTotalHeight = h - mPaddingBottom - mPaddingTop;
         // 用于保存原始波纹的y值
         mYPositions = new float[mTotalWidth];
         // 用于保存波纹一的y值

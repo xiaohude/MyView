@@ -126,6 +126,22 @@ public class MainActivity extends Activity {
 					showView(dynamicWave);
 					dynamicWave.setProgress(60);
 				}
+				else if(text.equals("wave100")) {
+					showView(dynamicWave);
+					dynamicWave.setProgress(100);
+				}
+				else if(text.equals("wave90")) {
+					showView(dynamicWave);
+					dynamicWave.setProgress(90);
+				}
+				else if(text.equals("wave10")) {
+					showView(dynamicWave);
+					dynamicWave.setProgress(10);
+				}
+				else if(text.equals("wave1")) {
+					showView(dynamicWave);
+					dynamicWave.setProgress(1);
+				}
 			}
 		});
 	}
