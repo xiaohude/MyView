@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="120dp"
+	android:layout_height="180dp"
+	android:orientation="vertical"
+	android:gravity="center_horizontal" >
+	   
+	<View
+	    android:id="@+id/battery_pole"
+		android:layout_width="24dp"
+		android:layout_height="10dp"
+		android:background="@drawable/battery_pole_normal_bg"
+		android:layout_marginBottom="2dp"
+		/>
+	
+	<com.smarttiger.myview.WaveBattery
+		android:id="@+id/wave_battery"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_gravity="center"/>
+ 
+</LinearLayout>

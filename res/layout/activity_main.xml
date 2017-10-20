@@ -126,14 +126,13 @@
 		    android:layout_gravity="center"
 	        android:visibility="gone"/>
 	    
-	    
-	    <com.smarttiger.myview.DynamicWave
-	        android:id="@+id/dynamicWave"
-            android:layout_width="120dp"
-            android:layout_height="160dp"
+	    <com.smarttiger.myview.WaveBatteryLayout
+	        android:id="@+id/waveBatteryLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 		    android:layout_centerInParent="true"
 		    android:layout_gravity="center"/>
-		
+	    
     </RelativeLayout>
 
 </RelativeLayout>

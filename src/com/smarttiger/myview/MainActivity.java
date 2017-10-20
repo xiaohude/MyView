@@ -35,7 +35,7 @@ public class MainActivity extends Activity {
 	private BubbleScanView progressBar3;
 	private BubbleProgressView progressBar4;
 	private MemoryScanView progressBar5;
-	private DynamicWave dynamicWave;
+	private WaveBatteryLayout waveBatteryLayout;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +62,7 @@ public class MainActivity extends Activity {
 		progressBar3 = (BubbleScanView) findViewById(R.id.progress3);
 		progressBar4 = (BubbleProgressView) findViewById(R.id.progress4);
 		progressBar5 = (MemoryScanView) findViewById(R.id.progress5);
-		dynamicWave = (DynamicWave) findViewById(R.id.dynamicWave);
+		waveBatteryLayout = (WaveBatteryLayout) findViewById(R.id.waveBatteryLayout);
 		
 		inputButton.setOnClickListener(new OnClickListener() {
 			
@@ -123,24 +123,35 @@ public class MainActivity extends Activity {
 					progressBar5.startCleanItemsAnim();
 				}
 				else if(text.equals("wave")) {
-					showView(dynamicWave);
-					dynamicWave.setProgress(60);
+					showView(waveBatteryLayout);
+					waveBatteryLayout.updateLevel(60);
+				}
+				else if(text.equals("wave110")) {
+					waveBatteryLayout.updateLevel(110);
 				}
 				else if(text.equals("wave100")) {
-					showView(dynamicWave);
-					dynamicWave.setProgress(100);
+					waveBatteryLayout.updateLevel(100);
+				}
+				else if(text.equals("wave99")) {
+					waveBatteryLayout.updateLevel(99);
 				}
 				else if(text.equals("wave90")) {
-					showView(dynamicWave);
-					dynamicWave.setProgress(90);
+					waveBatteryLayout.updateLevel(90);
+				}
+				else if(text.equals("wave50")) {
+					waveBatteryLayout.updateLevel(50);
 				}
 				else if(text.equals("wave10")) {
-					showView(dynamicWave);
-					dynamicWave.setProgress(10);
+					waveBatteryLayout.updateLevel(10);
+				}
+				else if(text.equals("wave5")) {
+					waveBatteryLayout.updateLevel(5);
+				}
+				else if(text.equals("wave2")) {
+					waveBatteryLayout.updateLevel(2);
 				}
 				else if(text.equals("wave1")) {
-					showView(dynamicWave);
-					dynamicWave.setProgress(1);
+					waveBatteryLayout.updateLevel(1);
 				}
 			}
 		});

@@ -13,7 +13,7 @@ import android.graphics.PaintFlagsDrawFilter;
 import android.util.AttributeSet;
 import android.view.View;
 
-public class DynamicWave extends View {
+public class WaveBattery extends View {
 
     // 波纹颜色
     private static final int WAVE_PAINT_COLOR = 0xaa00cc00;
@@ -26,7 +26,7 @@ public class DynamicWave extends View {
     // 第二条水波移动速度
     private static final int TRANSLATE_X_SPEED_TWO = 2;
     // 圆角半径
-    private static final int CORNER_RADIUS = 30;
+    private int CORNER_RADIUS = 10;
     private float mCycleFactorW;
 
     private int mTotalWidth, mTotalHeight;
@@ -42,14 +42,17 @@ public class DynamicWave extends View {
     private int mXOneOffset;
     private int mXTwoOffset;
 
+    private Context mContext;
     private Paint mWavePaint;
     private DrawFilter mDrawFilter;
 
-    public DynamicWave(Context context, AttributeSet attrs) {
+    public WaveBattery(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
         // 将dp转化为px，用于控制不同分辨率上移动速度基本一致
         mXOffsetSpeedOne = UiUtils.dipToPx(context, TRANSLATE_X_SPEED_ONE);
         mXOffsetSpeedTwo = UiUtils.dipToPx(context, TRANSLATE_X_SPEED_TWO);
+        CORNER_RADIUS = UiUtils.dipToPx(context, CORNER_RADIUS);
 
         // 初始绘制波纹的画笔
         mWavePaint = new Paint();
@@ -61,6 +64,7 @@ public class DynamicWave extends View {
         mWavePaint.setColor(WAVE_PAINT_COLOR);
         mDrawFilter = new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         
+        setBackgroundResource(R.drawable.battery_capsule_bg);
     }
     
     public void setProgress(int level) {  
