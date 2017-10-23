@@ -21,6 +21,8 @@ public class WaveBattery extends View {
     // 振幅
     private static final float STRETCH_FACTOR_A = 10;
     private static final int OFFSET_Y = 0;
+    // 每一帧画面 sleep 毫秒 控制显示速度
+    private static final int SLEEP_TIME = 12;
     // 第一条水波移动速度
     private static final int TRANSLATE_X_SPEED_ONE = 3;
     // 第二条水波移动速度
@@ -34,6 +36,7 @@ public class WaveBattery extends View {
     private int mPaddingTop = 0;
     private int mPaddingBottom = 0;
     private int mCenterY = 200; //水波纹的高度-电池电量高度，和canvas的坐标相反
+    private boolean mIsConnected = true;// 不充电状态，是否需要波纹动效
     private float[] mYPositions;
     private float[] mResetOneYPositions;
     private float[] mResetTwoYPositions;
@@ -71,79 +74,121 @@ public class WaveBattery extends View {
         mCenterY = (int) (mTotalHeight * ((double) level / 100));  
     }  
 
+    public void updatePowerConnected(boolean isConnected) {
+        mIsConnected = isConnected;
+    }
+    
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         // 从canvas层面去除绘制时锯齿
         canvas.setDrawFilter(mDrawFilter);
         
-        resetPositonY();
-        for (int x = 0; x < CORNER_RADIUS; x++) {
-        	float conerY = getRadiusY(CORNER_RADIUS - x);
-        	float startY1 = mPaddingTop + mTotalHeight - mResetOneYPositions[x] - mCenterY;
-        	float startY2 = mPaddingTop + mTotalHeight - mResetTwoYPositions[x] - mCenterY;
-        	float stopY = mPaddingTop + mTotalHeight - conerY;
-
-            if(mCenterY < mTotalHeight - CORNER_RADIUS - STRETCH_FACTOR_A) {
-            	startY1 = startY1 < stopY ? startY1 : stopY;
-            	startY2 = startY2 < stopY ? startY2 : stopY;
-            } else {
-            	startY1 = startY1 > conerY ? startY1 : conerY;
-            	startY2 = startY2 > conerY ? startY2 : conerY;
-            }
-            // 绘制第一条水波纹
-            canvas.drawLine(x, startY1, x, stopY, mWavePaint);
-            // 绘制第二条水波纹
-            canvas.drawLine(x, startY2, x, stopY, mWavePaint);
-        }
-        for (int x = CORNER_RADIUS; x < mTotalWidth - CORNER_RADIUS; x++) {
-        	// 减mCenterY只是为了控制波纹绘制的y的在屏幕的位置，大家可以改成一个变量，然后动态改变这个变量，从而形成波纹上升下降效果
-        	// 绘制第一条水波纹
-        	canvas.drawLine(
-        			x, mPaddingTop + mTotalHeight - mResetOneYPositions[x] - mCenterY, 
-        			x, mPaddingTop + mTotalHeight,
-        			mWavePaint);
-        	// 绘制第二条水波纹
-        	canvas.drawLine(
-        			x, mPaddingTop + mTotalHeight - mResetTwoYPositions[x] - mCenterY, 
-        			x, mPaddingTop + mTotalHeight,
-        			mWavePaint);
-        }
-        for (int x = mTotalWidth - CORNER_RADIUS; x < mTotalWidth; x++) {
-
-        	float conerY = getRadiusY(CORNER_RADIUS - mTotalWidth + x);
-        	float startY1 = mPaddingTop + mTotalHeight - mResetOneYPositions[x] - mCenterY;
-        	float startY2 = mPaddingTop + mTotalHeight - mResetTwoYPositions[x] - mCenterY;
-        	float stopY = mPaddingTop + mTotalHeight - conerY;
-
-            if(mCenterY < mTotalHeight - CORNER_RADIUS - STRETCH_FACTOR_A) {
-            	startY1 = startY1 < stopY ? startY1 : stopY;
-            	startY2 = startY2 < stopY ? startY2 : stopY;
-            } else {
-            	startY1 = startY1 > conerY ? startY1 : conerY;
-            	startY2 = startY2 > conerY ? startY2 : conerY;
-            }
-        	
-        	// 绘制第一条水波纹
-            canvas.drawLine(x, startY1, x, stopY, mWavePaint);
-            // 绘制第二条水波纹
-            canvas.drawLine(x, startY2, x, stopY, mWavePaint);
-        }
-        
-
-        // 改变两条波纹的移动点
-        mXOneOffset += mXOffsetSpeedOne;
-        mXTwoOffset += mXOffsetSpeedTwo;
-
-        // 如果已经移动到结尾处，则重头记录
-        if (mXOneOffset >= mTotalWidth) {
-            mXOneOffset = 0;
-        }
-        if (mXTwoOffset > mTotalWidth) {
-            mXTwoOffset = 0;
-        }
+        if(mIsConnected) {
+	        resetPositonY();
+	        for (int x = 0; x < CORNER_RADIUS; x++) {
+	        	float conerY = getRadiusY(CORNER_RADIUS - x);
+	        	float startY1 = mPaddingTop + mTotalHeight - mResetOneYPositions[x] - mCenterY;
+	        	float startY2 = mPaddingTop + mTotalHeight - mResetTwoYPositions[x] - mCenterY;
+	        	float stopY = mPaddingTop + mTotalHeight - conerY;
+	            if(mCenterY < mTotalHeight - CORNER_RADIUS - STRETCH_FACTOR_A) {
+	            	startY1 = startY1 < stopY ? startY1 : stopY;
+	            	startY2 = startY2 < stopY ? startY2 : stopY;
+	            } else {
+	            	startY1 = startY1 > conerY ? startY1 : conerY;
+	            	startY2 = startY2 > conerY ? startY2 : conerY;
+	            }
+	            // 绘制第一条水波纹
+	            canvas.drawLine(x, startY1, x, stopY, mWavePaint);
+	            // 绘制第二条水波纹
+	            canvas.drawLine(x, startY2, x, stopY, mWavePaint);
+	        }
+	        for (int x = CORNER_RADIUS; x < mTotalWidth - CORNER_RADIUS; x++) {
+	        	// 减mCenterY只是为了控制波纹绘制的y的在屏幕的位置，大家可以改成一个变量，然后动态改变这个变量，从而形成波纹上升下降效果
+	        	// 绘制第一条水波纹
+	        	canvas.drawLine(
+	        			x, mPaddingTop + mTotalHeight - mResetOneYPositions[x] - mCenterY, 
+	        			x, mPaddingTop + mTotalHeight,
+	        			mWavePaint);
+	        	// 绘制第二条水波纹
+	        	canvas.drawLine(
+	        			x, mPaddingTop + mTotalHeight - mResetTwoYPositions[x] - mCenterY, 
+	        			x, mPaddingTop + mTotalHeight,
+	        			mWavePaint);
+	        }
+	        for (int x = mTotalWidth - CORNER_RADIUS; x < mTotalWidth; x++) {
+	        	float conerY = getRadiusY(CORNER_RADIUS - mTotalWidth + x);
+	        	float startY1 = mPaddingTop + mTotalHeight - mResetOneYPositions[x] - mCenterY;
+	        	float startY2 = mPaddingTop + mTotalHeight - mResetTwoYPositions[x] - mCenterY;
+	        	float stopY = mPaddingTop + mTotalHeight - conerY;
+	            if(mCenterY < mTotalHeight - CORNER_RADIUS - STRETCH_FACTOR_A) {
+	            	startY1 = startY1 < stopY ? startY1 : stopY;
+	            	startY2 = startY2 < stopY ? startY2 : stopY;
+	            } else {
+	            	startY1 = startY1 > conerY ? startY1 : conerY;
+	            	startY2 = startY2 > conerY ? startY2 : conerY;
+	            }
+	        	// 绘制第一条水波纹
+	            canvas.drawLine(x, startY1, x, stopY, mWavePaint);
+	            // 绘制第二条水波纹
+	            canvas.drawLine(x, startY2, x, stopY, mWavePaint);
+	        }
+	        
+	        // 改变两条波纹的移动点
+	        mXOneOffset += mXOffsetSpeedOne;
+	        mXTwoOffset += mXOffsetSpeedTwo;
+	
+	        // 如果已经移动到结尾处，则重头记录
+	        if (mXOneOffset >= mTotalWidth) {
+	            mXOneOffset = 0;
+	        }
+	        if (mXTwoOffset > mTotalWidth) {
+	            mXTwoOffset = 0;
+	        }
+	        
+        } else {
+	    	for (int x = 0; x < CORNER_RADIUS; x++) {
+	        	float conerY = getRadiusY(CORNER_RADIUS - x);
+	        	float startY = mTotalHeight - mCenterY;
+	        	float stopY = mPaddingTop + mTotalHeight - conerY;
+	            if(mCenterY < mTotalHeight - CORNER_RADIUS - STRETCH_FACTOR_A) {
+	            	startY = startY < stopY ? startY : stopY;
+	            } else {
+	            	startY = startY > conerY ? startY : conerY;
+	            }
+	            canvas.drawLine(x, startY, x, stopY, mWavePaint);
+	            canvas.drawLine(x, startY, x, stopY, mWavePaint);
+	        }
+	        for (int x = CORNER_RADIUS; x < mTotalWidth - CORNER_RADIUS; x++) {
+	        	canvas.drawLine(
+	        			x, mTotalHeight - mCenterY, 
+	        			x, mPaddingTop + mTotalHeight,
+	        			mWavePaint);
+	        	canvas.drawLine(
+	        			x, mTotalHeight - mCenterY, 
+	        			x, mPaddingTop + mTotalHeight,
+	        			mWavePaint);
+	        }
+	        for (int x = mTotalWidth - CORNER_RADIUS; x < mTotalWidth; x++) {
+	        	float conerY = getRadiusY(CORNER_RADIUS - mTotalWidth + x);
+	        	float startY = mTotalHeight - mCenterY;
+	        	float stopY = mPaddingTop + mTotalHeight - conerY;
+	            if(mCenterY < mTotalHeight - CORNER_RADIUS - STRETCH_FACTOR_A) {
+	            	startY = startY < stopY ? startY : stopY;
+	            } else {
+	            	startY = startY > conerY ? startY : conerY;
+	            }
+	            canvas.drawLine(x, startY, x, stopY, mWavePaint);
+	            canvas.drawLine(x, startY, x, stopY, mWavePaint);
+	        }
+	    }
 
         // 引发view重绘，一般可以考虑延迟20-30ms重绘，空出时间片
+        try {
+			Thread.sleep(SLEEP_TIME);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
         postInvalidate();
     }
 

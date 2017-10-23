@@ -153,6 +153,9 @@ public class MainActivity extends Activity {
 				else if(text.equals("wave1")) {
 					waveBatteryLayout.updateLevel(1);
 				}
+				else if(text.equals("wave0")) {
+					waveBatteryLayout.updateLevel(0);
+				}
 			}
 		});
 	}
